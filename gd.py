@@ -1,6 +1,7 @@
 import numpy as np
 
-M = RHO = 1
+M = 1
+RHO = np.sqrt(2)
 D = 5
 
 def euclidean_projection(v):

@@ -11,11 +11,9 @@ def generate_vector(sigma):
         mu = mu * -1
         label = -1
 
-    l = sigma * sigma
-
     z = np.array([np.random.normal() for _ in range(4)])
 
-    u = mu + l * z
+    u = mu + sigma * z
 
     norm = np.linalg.norm(u)
     if (norm > 1):
@@ -42,10 +40,8 @@ def generate_training_set(n, sigma):
 def generate_testing_set(sigma):
     random.seed(sigma)
     np.random.seed(int(sigma * 10))
-    if sigma == .2:
-       return generate_training_set(400, sigma)
-    
     return generate_training_set(400, sigma)
 
-generate_training_set(50, 30)
-generate_testing_set(.4)
+if __name__ == "__main__":
+    generate_training_set(50, 30)
+    generate_testing_set(.4)

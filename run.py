@@ -1,6 +1,7 @@
 import numpy as np
 import experiment as exp
 import gd
+import dataGeneration as dg
 
 
 def predictor_generator(training_set, sigma):
@@ -31,10 +32,11 @@ parameters = [[50, .2], [50, .4],
 
 def main():
     settings = {0.2: [], 0.4: []}
+    test_sets = {sigma: dg.generate_testing_set(sigma) for sigma in [0.2, 0.4]}
 
     for n, sigma in parameters:
         predictor_risks, predictor_bc_errors = exp.run_experiment(
-            n, sigma, predictor_generator, predictor_test
+            n, sigma, test_sets[sigma], predictor_generator, predictor_test
         )
         settings[sigma].append((n, predictor_risks, predictor_bc_errors))
 
