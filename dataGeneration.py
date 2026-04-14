@@ -20,7 +20,8 @@ def generate_vector(sigma):
     norm = np.linalg.norm(u)
     if (norm > 1):
         u = u / norm
-    
+
+    u = np.append(u, 1)  # bias term
     return [label, u]
 
 # The training set is returned as a list
@@ -32,9 +33,7 @@ def generate_training_set(n, sigma):
     for _ in range(n):
         training_set.append(generate_vector(sigma))
     
-    for row in training_set:
-        print(row)
-
+    print(f"Generated {n} examples (sigma={sigma})")
     return training_set
 
 # This function generates the testing set for sigma = .2 or sigma = .4

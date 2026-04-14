@@ -1,17 +1,26 @@
+import numpy as np
 import experiment as exp
+import gd
 
 
-def todo():
-    raise NotImplementedError(
-        "Plug in your SGD learner here: todo(training_set, sigma) -> predictor"
-    )
+def predictor_generator(training_set, sigma):
+    T = len(training_set)
+    return gd.gradient_descent(training_set, T)
 
 
-def todo_two():
-    raise NotImplementedError(
-        "Plug in your predictor evaluation here: "
-        "todo_two(predictor, testing_set) -> (risk, classification_error)"
-    )
+def predictor_test(predictor, testing_set):
+    w = predictor
+    total_loss = 0.0
+    total_error = 0
+    for z in testing_set:
+        y, x = z[0], z[1]
+        margin = y * np.dot(w, x)
+        total_loss += np.log(1 + np.exp(-margin))
+        pred = 1 if np.dot(w, x) >= 0 else -1
+        total_error += 1 if pred != y else 0
+    risk = total_loss / len(testing_set)
+    bc_error = total_error / len(testing_set)
+    return float(risk), float(bc_error)
 
 
 # Different parameter settings of n, sigma
@@ -25,7 +34,7 @@ def main():
 
     for n, sigma in parameters:
         predictor_risks, predictor_bc_errors = exp.run_experiment(
-            n, sigma, todo, todo_two
+            n, sigma, predictor_generator, predictor_test
         )
         settings[sigma].append((n, predictor_risks, predictor_bc_errors))
 
