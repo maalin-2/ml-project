@@ -1,0 +1,11 @@
+__pycache__/
+*.py[cod]
+venv/
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.mypy_cache/
+.DS_Store
+results/
+mock_run.py

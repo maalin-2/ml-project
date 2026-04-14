@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ml-project"
+version = "0.1.0"
+description = "CSE 5523 machine learning final project"
+dependencies = [
+  "numpy",
+  "matplotlib",
+]
+
+[tool.setuptools]
+py-modules = ["dataGeneration", "experiment", "run"]
