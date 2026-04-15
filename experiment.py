@@ -5,13 +5,12 @@ from pathlib import Path
 
 # This function conducts all 30 experiment runs for the setting of
 # n and sigma. It returns the predictor (ŵ) risk and classification error
-def run_experiment(n, sigma, predictor_generator, predictor_test):
+def run_experiment(n, sigma, testing_set, predictor_generator, predictor_test):
     predictor_risks = []
     bc_errors = []
 
     for _ in range(30):
         training_set = dg.generate_training_set(n, sigma)
-        testing_set = dg.generate_testing_set(sigma)
         predictor = predictor_generator(training_set, sigma)
         risk, bc_error = predictor_test(predictor, testing_set)
         predictor_risks.append(risk)
