@@ -31,7 +31,6 @@ def generate_training_set(n, sigma):
     for _ in range(n):
         training_set.append(generate_vector(sigma))
     
-    print(f"Generated {n} examples (sigma={sigma})")
     return training_set
 
 # This function generates the testing set for sigma = .2 or sigma = .4
