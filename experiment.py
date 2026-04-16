@@ -3,12 +3,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 from pathlib import Path
 
-# This function conducts all 30 experiment runs for the setting of
-# n and sigma. It returns the predictor (ŵ) risk and classification error
+# runs 30 trials for a given (n, sigma) and returns lists of risk and error across trials
 def run_experiment(n, sigma, testing_set, predictor_generator, predictor_test):
     predictor_risks = []
     bc_errors = []
 
+    # each iteration trains on a fresh training set and evaluates on the fixed test set
     for _ in range(30):
         training_set = dg.generate_training_set(n, sigma)
         predictor = predictor_generator(training_set, sigma)
@@ -19,8 +19,7 @@ def run_experiment(n, sigma, testing_set, predictor_generator, predictor_test):
     return predictor_risks, bc_errors
 
 
-# This function returns the necessary statistics for the experiment
-# Minimum, mean, standard deviation, expected excess risk = mean - minimum
+# computes min, mean, std, and expected excess risk from a list of values
 def calculate_statistics(data):
     values = np.asarray(data, dtype=float)
     minimum = float(np.min(values))
@@ -29,6 +28,7 @@ def calculate_statistics(data):
     std = float(np.std(values))
     return minimum, mean, std, exp_excess_risk
 
+# plots excess risk and classification error vs n, saves figure to results/
 def plot_graph(sigma, summaries):
     results_dir = Path("results")
     results_dir.mkdir(parents=True, exist_ok=True)
@@ -79,6 +79,7 @@ def plot_graph(sigma, summaries):
     return output_path
 
 
+# builds a summary dict of statistics for a single (n, sigma) setting
 def _build_summary_row(n, predictor_risks, bc_errors):
     risk_min, risk_mean, risk_std, risk_excess = calculate_statistics(predictor_risks)
     _, error_mean, error_std, _ = calculate_statistics(bc_errors)
@@ -93,8 +94,11 @@ def _build_summary_row(n, predictor_risks, bc_errors):
     }
 
 
+# prints a results table for all n values at a given sigma and saves the plot
 def print_results(sigma, setting_rows):
     summaries = []
+
+    # sort by n so the table is in ascending order
     for n, predictor_risks, bc_errors in sorted(setting_rows, key=lambda x: x[0]):
         summaries.append(_build_summary_row(n, predictor_risks, bc_errors))
 
