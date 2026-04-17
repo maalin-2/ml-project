@@ -5,7 +5,7 @@ import dataGeneration as dg
 
 
 # trains a predictor via sgd using T = n steps
-def predictor_generator(training_set, sigma):
+def predictor_generator(training_set):
     T = len(training_set)
     return gd.gradient_descent(training_set, T)
 

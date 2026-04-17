@@ -1,3 +1,4 @@
+import random
 import dataGeneration as dg
 import numpy as np
 import matplotlib.pyplot as plt
@@ -9,9 +10,11 @@ def run_experiment(n, sigma, testing_set, predictor_generator, predictor_test):
     bc_errors = []
 
     # each iteration trains on a fresh training set and evaluates on the fixed test set
-    for _ in range(30):
+    for trial in range(30):
+        random.seed(trial)
+        np.random.seed(trial)
         training_set = dg.generate_training_set(n, sigma)
-        predictor = predictor_generator(training_set, sigma)
+        predictor = predictor_generator(training_set)
         risk, bc_error = predictor_test(predictor, testing_set)
         predictor_risks.append(risk)
         bc_errors.append(bc_error)
@@ -52,8 +55,16 @@ def plot_graph(sigma, summaries):
     axes[0].set_title(f"Expected Excess Risk (sigma={sigma})")
     axes[0].set_xlabel("Training examples n")
     axes[0].set_ylabel("E[L(w_hat; D)] - min L(w; D)")
+    axes[0].set_xscale("log")
+    axes[0].set_yscale("log")
     axes[0].set_xticks(n_values)
+    axes[0].get_xaxis().set_major_formatter(plt.ScalarFormatter())
     axes[0].grid(True, alpha=0.3)
+    # reference line O(1/sqrt(n)), anchored to first data point
+    ref_n = np.array(n_values)
+    c0 = excess_risk_means[0] * n_values[0] ** 0.5
+    axes[0].plot(ref_n, c0 * ref_n ** -0.5, "k--", linewidth=1, label=r"$O(n^{-1/2})$")
+    axes[0].legend()
 
     axes[1].errorbar(
         n_values,
@@ -67,7 +78,10 @@ def plot_graph(sigma, summaries):
     axes[1].set_title(f"Expected Classification Error (sigma={sigma})")
     axes[1].set_xlabel("Training examples n")
     axes[1].set_ylabel("E[err(w_hat; D)]")
+    axes[1].set_xscale("log")
+    axes[1].set_yscale("log")
     axes[1].set_xticks(n_values)
+    axes[1].get_xaxis().set_major_formatter(plt.ScalarFormatter())
     axes[1].grid(True, alpha=0.3)
 
     fig.suptitle(f"SGD Performance Summary (sigma={sigma})")
